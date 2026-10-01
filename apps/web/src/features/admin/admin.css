@@ -1,0 +1,182 @@
+.admin-console {
+  max-width: 1440px;
+  margin: auto;
+  padding: 32px;
+  color: #17304a;
+  background: #f5f8fb;
+  min-height: 100vh;
+}
+.admin-console > header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+.admin-console h1 {
+  font-size: 2rem;
+  margin: 0.3rem 0;
+}
+.admin-eyebrow {
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  color: #41647c;
+}
+.admin-console nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 24px 0;
+}
+.admin-console button,
+.admin-console select,
+.admin-console input,
+.admin-console textarea {
+  font: inherit;
+  padding: 10px 14px;
+  border: 1px solid #b8cbd8;
+  border-radius: 7px;
+  background: white;
+  color: #17304a;
+}
+.admin-console button {
+  cursor: pointer;
+}
+.admin-console button[aria-current='page'] {
+  background: #123a55;
+  color: white;
+  border-color: #123a55;
+}
+.admin-console button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.admin-console :focus-visible {
+  outline: 3px solid #1681b4;
+  outline-offset: 3px;
+}
+.admin-console section {
+  padding: 24px;
+  border: 1px solid #d9e4ec;
+  border-radius: 12px;
+  background: white;
+}
+.admin-search,
+.admin-pagination {
+  display: flex;
+  gap: 12px;
+  align-items: end;
+  margin: 20px 0;
+}
+.admin-console label {
+  display: grid;
+  gap: 8px;
+}
+.admin-table-wrap {
+  overflow: auto;
+}
+.admin-console table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.86rem;
+}
+.admin-console th,
+.admin-console td {
+  padding: 12px;
+  border-bottom: 1px solid #e4ebf0;
+  text-align: left;
+  max-width: 340px;
+  overflow-wrap: anywhere;
+  vertical-align: top;
+}
+.admin-details {
+  margin: 0;
+}
+.admin-details > div {
+  padding: 10px 0;
+  border-bottom: 1px solid #e8eef3;
+}
+.admin-details dt {
+  font-weight: 600;
+  text-transform: capitalize;
+}
+.admin-details dd {
+  margin: 6px 0;
+  overflow-wrap: anywhere;
+}
+.admin-inspection {
+  margin-top: 24px;
+  padding: 20px;
+  background: #f5f8fb;
+  border-radius: 10px;
+}
+.admin-console textarea {
+  width: 100%;
+  box-sizing: border-box;
+}
+.admin-console footer {
+  padding: 24px 0;
+  font-size: 0.85rem;
+  color: #526d80;
+}
+@media (max-width: 700px) {
+  .admin-console {
+    padding: 14px;
+  }
+  .admin-console section {
+    padding: 14px;
+  }
+  .admin-console > header {
+    align-items: start;
+  }
+  .admin-console nav button {
+    flex: 1 0 40%;
+  }
+  .admin-search {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .admin-console main {
+    padding: 0 !important;
+  }
+  .admin-console main > div {
+    display: block !important;
+  }
+}
+
+@media (max-width: 700px) {
+  .admin-console table,
+  .admin-console tbody,
+  .admin-console tr {
+    display: block;
+    width: 100%;
+  }
+  .admin-console thead {
+    display: none;
+  }
+  .admin-console tr {
+    border: 1px solid #d9e4ec;
+    border-radius: 8px;
+    margin: 12px 0;
+    padding: 6px;
+    box-sizing: border-box;
+  }
+  .admin-console td {
+    display: grid;
+    grid-template-columns: 100px minmax(0, 1fr);
+    gap: 10px;
+    max-width: none;
+    padding: 10px 6px;
+  }
+  .admin-console td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    text-transform: capitalize;
+  }
+  .admin-console td:not([data-label]) {
+    display: block;
+    border: 0;
+  }
+  .admin-console td button {
+    width: 100%;
+  }
+}

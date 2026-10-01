@@ -1,0 +1,40 @@
+groups:
+  - name: b2b-release
+    rules:
+      - alert: ApiUnavailable
+        expr: up{job="api"} == 0
+        for: 1m
+        labels: { severity: critical }
+        annotations: { summary: 'API monitoring endpoint is unavailable' }
+      - alert: ApiErrorRate
+        expr: sum(rate(b2b_http_responses_total{status=~"5.."}[5m])) / clamp_min(sum(rate(b2b_http_responses_total[5m])), 0.01) > 0.01
+        for: 5m
+        labels: { severity: critical }
+        annotations: { summary: 'API server errors exceed 1%' }
+      - alert: ApiLatency
+        expr: histogram_quantile(0.95, sum by (le) (rate(b2b_http_duration_seconds_bucket[5m]))) > 1
+        for: 10m
+        labels: { severity: warning }
+        annotations: { summary: 'API p95 latency exceeds one second' }
+      - alert: RequestAbuse
+        expr: sum(rate(b2b_http_responses_total{status="429"}[5m])) > 5
+        for: 5m
+        labels: { severity: warning }
+        annotations:
+          { summary: 'Elevated rate-limit denials; inspect security audit' }
+      - alert: CriticalDependencyDown
+        expr: b2b_dependency_up == 0
+        for: 1m
+        labels: { severity: critical }
+        annotations: { summary: 'A critical application dependency is down' }
+      - alert: NotificationWorkerMissing
+        expr: b2b_queue_jobs{state="workers"} == 0
+        for: 2m
+        labels: { severity: warning }
+        annotations: { summary: 'No notification worker is connected' }
+      - alert: NotificationDeliveryFailed
+        expr: b2b_notification_intents{state="failed"} > 0
+        for: 5m
+        labels: { severity: warning }
+        annotations:
+          { summary: 'Notification failures require operator review' }

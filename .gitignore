@@ -1,0 +1,55 @@
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+!.env.*.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+secrets/
+demo-private/
+
+# Dependencies and caches
+node_modules/
+.pnpm-store/
+.npm/
+.yarn/
+.turbo/
+.next/
+.cache/
+*.tsbuildinfo
+
+# Builds, coverage, tests, logs
+dist/
+build/
+out/
+coverage/
+test-results/
+playwright-report/
+blob-report/
+*.log
+logs/
+
+# Local infrastructure data
+.local/
+data/
+volumes/
+postgres-data/
+redis-data/
+seaweedfs-data/
+
+# IDE and operating system
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Local Vercel project association
+.vercel/

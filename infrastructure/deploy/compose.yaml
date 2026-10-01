@@ -1,0 +1,95 @@
+name: ${DEPLOYMENT_NAME:?Use a distinct staging or production deployment name}
+services:
+  api:
+    image: ${API_IMAGE:?Set immutable API release image}
+    env_file: ${RUNTIME_ENV_FILE:?Set private environment file}
+    environment:
+      { NODE_ENV: production, API_HOST: 0.0.0.0, OTEL_SERVICE_NAME: b2b-api }
+    init: true
+    restart: unless-stopped
+    ports: ['127.0.0.1:${API_BIND_PORT:-3001}:3001']
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'node',
+          '-e',
+          'fetch("http://127.0.0.1:3001/health").then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))',
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    stop_grace_period: 30s
+  web:
+    image: ${WEB_IMAGE:?Set immutable web release image}
+    env_file: ${RUNTIME_ENV_FILE}
+    environment: { NODE_ENV: production }
+    init: true
+    restart: unless-stopped
+    ports: ['127.0.0.1:${WEB_BIND_PORT:-3000}:3000']
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'node',
+          '-e',
+          'fetch("http://127.0.0.1:3000/").then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))',
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+  worker:
+    image: ${WORKER_IMAGE:?Set immutable worker release image}
+    env_file: ${RUNTIME_ENV_FILE}
+    environment: { NODE_ENV: production, OTEL_SERVICE_NAME: b2b-worker }
+    init: true
+    restart: unless-stopped
+    stop_grace_period: 30s
+  prometheus:
+    secrets: [metrics_token]
+    image: prom/prometheus:v3.14.0
+    volumes:
+      - ../observability/prometheus/prometheus.yaml:/etc/prometheus/prometheus.yml:ro
+      - ../observability/prometheus/alerts.yaml:/etc/prometheus/alerts.yaml:ro
+      - prometheus_data:/prometheus
+    command:
+      [
+        '--config.file=/etc/prometheus/prometheus.yml',
+        '--storage.tsdb.retention.time=40d',
+      ]
+    ports: ['127.0.0.1:${PROMETHEUS_BIND_PORT:-9090}:9090']
+    restart: unless-stopped
+  grafana:
+    image: grafana/grafana:13.2.2
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:?Set private Grafana credential}
+      GF_USERS_ALLOW_SIGN_UP: 'false'
+      GF_AUTH_ANONYMOUS_ENABLED: 'false'
+    volumes:
+      - ../observability/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ../observability/grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - grafana_data:/var/lib/grafana
+    ports: ['127.0.0.1:${GRAFANA_BIND_PORT:-3002}:3000']
+    restart: unless-stopped
+  backup:
+    image: postgres:18.6
+    env_file: ${BACKUP_ENV_FILE:?Set separate private libpq backup configuration}
+    environment: { BACKUP_DIR: /backups }
+    volumes:
+      - ../../database/scripts/backup.sh:/operations/backup.sh:ro
+      - ${BACKUP_DIRECTORY:?Set protected dedicated backup directory}:/backups
+    entrypoint:
+      [
+        'sh',
+        '-c',
+        'while true; do sh /operations/backup.sh || exit 1; sleep 86400; done',
+      ]
+    restart: on-failure
+volumes:
+  prometheus_data:
+  grafana_data:
+
+secrets:
+  metrics_token:
+    file: ${METRICS_TOKEN_FILE:?Set matching protected metrics token file}

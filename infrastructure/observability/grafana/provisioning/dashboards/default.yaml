@@ -1,0 +1,6 @@
+apiVersion: 1
+providers:
+  - name: B2B Hyderabad
+    folder: Operations
+    type: file
+    options: { path: /var/lib/grafana/dashboards }

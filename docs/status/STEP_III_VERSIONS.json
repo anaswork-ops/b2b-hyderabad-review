@@ -1,0 +1,70 @@
+{
+  "date": "2026-09-17",
+  "status": "Step III infrastructure validated; application dependencies selected but not installed",
+  "runtime": {
+    "node": "24.21.0",
+    "npm": "11.19.0",
+    "pnpm": "12.4.2",
+    "git": "2.52.0.windows.1",
+    "docker": "29.4.0",
+    "compose": "5.1.1"
+  },
+  "packages": {
+    "typescript": "7.0.2",
+    "turbo": "2.10.13",
+    "next": "16.3.5",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "@nestjs/core": "12.0.3",
+    "@nestjs/common": "12.0.3",
+    "@nestjs/cli": "12.0.3",
+    "prisma": "7.10.0",
+    "@prisma/client": "7.10.0",
+    "redis": "6.2.1",
+    "bullmq": "6.3.6",
+    "vitest": "5.0.1",
+    "@playwright/test": "1.63.0",
+    "@opentelemetry/api": "1.9.1",
+    "@opentelemetry/sdk-node": "0.222.0",
+    "prom-client": "15.1.3",
+    "pino": "10.3.1",
+    "eslint": "10.10.0",
+    "prettier": "3.9.7",
+    "husky": "9.1.7",
+    "lint-staged": "17.5.1",
+    "@aws-sdk/client-s3": "3.1134.0",
+    "@aws-sdk/s3-request-presigner": "3.1134.0",
+    "tailwindcss": "4.3.3"
+  },
+  "services": {
+    "postgresql": "18.6",
+    "redis_oss": "8.10.1",
+    "prometheus": "3.14.0",
+    "grafana": "13.2.2",
+    "k6": "2.2.0",
+    "s3_compatible": "SeaweedFS 4.47",
+    "opentelemetry_collector": "0.160.0"
+  },
+  "validation": {
+    "docker_engine": "PASS",
+    "docker_compose": "PASS",
+    "postgresql_18_6": "PASS: host SQL connection",
+    "redis_8_10_1": "PASS: SET/GET",
+    "seaweedfs_4_47": "PASS: authenticated S3 list/put/get/delete",
+    "prometheus_3_14_0": "PASS: ready and query up=1",
+    "grafana_13_2_2": "PASS: API health database=ok",
+    "k6_2_2_0": "PASS: one iteration HTTP check",
+    "opentelemetry_collector_0_160_0": "PASS: OTLP HTTP trace accepted and exported",
+    "package_peer_metadata": "PASS: selected direct engine and peer ranges",
+    "full_application_lockfile": "NOT RUN: Step IV"
+  },
+  "imageDigests": {
+    "postgres": "sha256:4ef4dbc939d61acea57712655ddb4b4ab27419c913f94cca0cd57cb3ea3c2280",
+    "redis": "sha256:298e5b3bc566bade82f46ad5511777a4a07a294097ce16ada2f6a42be5239df5",
+    "seaweedfs": "sha256:ce9e796f1fe6f06968f4c04bdaf8f678dad9c8acdfef3d244133d71bfa6bf882",
+    "prometheus": "sha256:5ce7540c3c00ef4ab0c9d2c995c6a5b9c421f44b4a115d97a2c7af3b1c21cbb0",
+    "grafana": "sha256:ac461fb352abc50da10a51c7d02462e9c05488f11f53f14b3ad79a8145f638a0",
+    "otel": "sha256:e495787f07dbe432ce763ebaf5bc3d113850e9eee2250ade7a3da6a882d0d69a",
+    "k6": "sha256:9bd01d6941fca969cb61bb57d2da5ee9b385fe2aa8881df3798c196564d6ace6"
+  }
+}

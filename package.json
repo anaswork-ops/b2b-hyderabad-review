@@ -1,0 +1,42 @@
+{
+  "name": "b2btravelv2",
+  "private": true,
+  "packageManager": "pnpm@12.4.2",
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "scripts": {
+    "dev": "node --env-file=.env node_modules/turbo/bin/turbo dev",
+    "build": "turbo build",
+    "typecheck": "turbo typecheck",
+    "lint": "turbo lint && eslint eslint.config.mjs prettier.config.mjs",
+    "test": "turbo test",
+    "test:e2e:phase2": "playwright test tests/e2e/phase2.spec.ts",
+    "test:e2e:phase3": "playwright test tests/e2e/phase3.spec.ts",
+    "test:e2e:phase4": "playwright test tests/e2e/phase4.spec.ts",
+    "test:e2e:phase5": "playwright test tests/e2e/phase5.spec.ts",
+    "test:e2e:phase6": "playwright test tests/e2e/phase6.spec.ts",
+    "test:e2e:verticals": "playwright test tests/e2e/verticals.spec.ts",
+    "format:check": "prettier --check \"apps/**/*.{ts,tsx,json,md,css}\" \"packages/**/*.{ts,tsx,json,md}\" \"infrastructure/**/*.{yaml,md}\" \"database/**/*.md\" package.json pnpm-workspace.yaml turbo.json tsconfig.base.json prisma.config.ts eslint.config.mjs prettier.config.mjs",
+    "format": "prettier --write \"**/*.{ts,tsx,js,json,md,yaml,yml,css}\"",
+    "db:validate": "prisma validate --schema database/prisma/schema.prisma",
+    "db:generate": "prisma generate --schema database/prisma/schema.prisma",
+    "db:migrate": "prisma migrate dev --schema database/prisma/schema.prisma",
+    "dev:web": "node --env-file=.env node_modules/turbo/bin/turbo dev --filter=@b2b/web",
+    "dev:api": "node --env-file=.env node_modules/turbo/bin/turbo dev --filter=@b2b/api",
+    "dev:worker": "node --env-file=.env node_modules/turbo/bin/turbo dev --filter=@b2b/worker",
+    "services:up": "docker compose --env-file .env -f infrastructure/compose/compose.yaml up -d --wait",
+    "services:down": "docker compose --env-file .env -f infrastructure/compose/compose.yaml down"
+  },
+  "devDependencies": {
+    "@babel/core": "7.29.6",
+    "@playwright/test": "1.63.0",
+    "@prisma/client": "7.10.0",
+    "eslint": "10.10.0",
+    "prettier": "3.9.7",
+    "prisma": "7.10.0",
+    "turbo": "2.10.13",
+    "typescript": "7.0.2",
+    "vitest": "5.0.1"
+  }
+}

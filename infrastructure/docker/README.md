@@ -1,0 +1,3 @@
+# Application images
+
+The Dockerfile builds api/web/worker targets from the pinned Node 24 image and workspace lockfile. Set the public NEXT_PUBLIC_API_ORIGIN build argument for the intended web deployment. Runtime secrets are injected separately; never pass them as build arguments. Runtime targets use the unprivileged node user. The build context excludes environments, demo-private, local backups, test output and dependencies. See docs/operations/RELEASE_RUNBOOK.md for separated staging, rollout, health and rollback requirements. Native builds are verified independently; record container build and runtime verification separately.

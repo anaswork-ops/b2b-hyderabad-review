@@ -1,0 +1,81 @@
+# Phase 8 FR-01–75 traceability
+
+This is an implementation/evidence map, not a blanket production certification. The governing PDFs remain unchanged. Phase 7 was manually accepted on 2026-09-30. Phase 8 release gates and test outcomes are recorded in its report; real external notifications, production-equivalent staging and measured monthly availability cannot be inferred from local tests. All test paths below are relative to the existing test roots. No bookings, payments, v3, staff management or Data Engineering expansion was added.
+
+| Requirement | Frozen title | Owner | Status / boundary | Evidence |
+| --- | --- | --- | --- | --- |
+| FR-01 | Landing page and 8D Presence | Web landing/market context | Implemented; automated regression and manual acceptance apply | landing.spec.ts, phase8.spec.ts; Phase 6 visual implementation |
+| FR-02 | Distinct landing actions and access | Web landing/market context | Implemented; automated regression and manual acceptance apply | landing.spec.ts, phase8.spec.ts; Phase 6 visual implementation |
+| FR-03 | Persistent Market and Country Context | Web landing/market context | Implemented; automated regression and manual acceptance apply | landing.spec.ts, phase8.spec.ts; Phase 6 visual implementation |
+| FR-04 | Service verticals and business identity | Businesses/Inventory/Verticals | Implemented; automated regression and manual acceptance apply | inventory.integration.test.ts, verticals.integration.test.ts; phase4.spec.ts, verticals.spec.ts |
+| FR-05 | Super Admin | Admin and owning domain services | Implemented; automated regression and manual acceptance apply | admin.integration.test.ts; phase7.spec.ts; accepted Phase 7 report |
+| FR-06 | Admin authority | Admin and owning domain services | Implemented; automated regression and manual acceptance apply | admin.integration.test.ts; phase7.spec.ts; accepted Phase 7 report |
+| FR-07 | Business User and business types | Auth/Users/Businesses and platform | Implemented; automated regression and manual acceptance apply | auth.integration.test.ts; phase2.spec.ts; platform code and handbook |
+| FR-08 | Guest discovery | Auth/Users/Businesses and platform | Implemented; automated regression and manual acceptance apply | auth.integration.test.ts; phase2.spec.ts; platform code and handbook |
+| FR-09 | Applicant state | Applications | Implemented; automated regression and manual acceptance apply | applications.integration.test.ts; phase3.spec.ts |
+| FR-10 | Business membership lifecycle | Applications | Implemented; automated regression and manual acceptance apply | applications.integration.test.ts; phase3.spec.ts |
+| FR-11 | Authentication and authorization | Auth/Users/Businesses and platform | Implemented; automated regression and manual acceptance apply | auth.integration.test.ts; phase2.spec.ts; platform code and handbook |
+| FR-12 | Protected business actions | Auth/Users/Businesses and platform | Implemented; automated regression and manual acceptance apply | auth.integration.test.ts; phase2.spec.ts; platform code and handbook |
+| FR-13 | Business offerings | Businesses/Inventory/Verticals | Implemented; automated regression and manual acceptance apply | inventory.integration.test.ts, verticals.integration.test.ts; phase4.spec.ts, verticals.spec.ts |
+| FR-14 | Business discovery and messaging | Messaging/Custom requests | Implemented; automated regression and manual acceptance apply | messaging.integration.test.ts; phase6.spec.ts |
+| FR-15 | Separate geographic concepts | Businesses/Inventory/Verticals | Implemented; automated regression and manual acceptance apply | inventory.integration.test.ts, verticals.integration.test.ts; phase4.spec.ts, verticals.spec.ts |
+| FR-16 | Application status notifications | Notifications/Worker | Partial: real provider selection and staging delivery still required | notification.test.ts, notification.integration.test.ts, NOTIFICATIONS.md |
+| FR-17 | Engineering access | Engineering access | Repository governance; no application role grants source access | AGENTS.md, handbook; external repository permissions require operator review |
+| FR-18 | Administrative auditability | Admin and owning domain services | Implemented; automated regression and manual acceptance apply | admin.integration.test.ts; phase7.spec.ts; accepted Phase 7 report |
+| FR-19 | Deferred detail | Auth/Users/Businesses and platform | Deferred-detail clause preserved; subsequent frozen sets govern | Frozen requirements sets and MVP boundary |
+| FR-20 | Availability-aware discovery | Marketplace and business dashboard | Implemented; automated regression and manual acceptance apply | marketplace.integration.test.ts; phase5.spec.ts, phase6.spec.ts |
+| FR-21 | Calendar and date filtering | Marketplace and business dashboard | Implemented; automated regression and manual acceptance apply | marketplace.integration.test.ts; phase5.spec.ts, phase6.spec.ts |
+| FR-22 | Vertical-specific search | Marketplace and business dashboard | Implemented; automated regression and manual acceptance apply | marketplace.integration.test.ts; phase5.spec.ts, phase6.spec.ts |
+| FR-23 | Supplier availability data | Businesses/Inventory/Verticals | Implemented; automated regression and manual acceptance apply | inventory.integration.test.ts, verticals.integration.test.ts; phase4.spec.ts, verticals.spec.ts |
+| FR-24 | Independent geographic matching | Marketplace and business dashboard | Implemented; automated regression and manual acceptance apply | marketplace.integration.test.ts; phase5.spec.ts, phase6.spec.ts |
+| FR-25 | Search context continuity | Marketplace and business dashboard | Implemented; automated regression and manual acceptance apply | marketplace.integration.test.ts; phase5.spec.ts, phase6.spec.ts |
+| FR-26 | Progressive filtering interface | Marketplace and business dashboard | Implemented; automated regression and manual acceptance apply | marketplace.integration.test.ts; phase5.spec.ts, phase6.spec.ts |
+| FR-27 | Visa result claims | Marketplace and business dashboard | Implemented; automated regression and manual acceptance apply | marketplace.integration.test.ts; phase5.spec.ts, phase6.spec.ts |
+| FR-28 | Deferred filter detail | Marketplace and business dashboard | Deferred-detail clause preserved; subsequent frozen sets govern | Frozen requirements sets and MVP boundary |
+| FR-29 | Concurrent capacity and load testing | Capacity | Measured local workload only; see performance report and failed stress results | tests/load/marketplace.js; Phase 8 report with raw measurements |
+| FR-30 | Service availability objective | Availability | Operational release gate; monthly production uptime not yet measurable | RELEASE_RUNBOOK.md; external synthetic monitor and production host required |
+| FR-31 | Authentication lifecycle and login experience | Auth/Users/Businesses and platform | Implemented; automated regression and manual acceptance apply | auth.integration.test.ts; phase2.spec.ts; platform code and handbook |
+| FR-32 | State-aware routing after login | Auth/Users/Businesses and platform | Implemented; automated regression and manual acceptance apply | auth.integration.test.ts; phase2.spec.ts; platform code and handbook |
+| FR-33 | Secure sessions | Auth/Users/Businesses and platform | Implemented; automated regression and manual acceptance apply | auth.integration.test.ts; phase2.spec.ts; platform code and handbook |
+| FR-34 | Multi-factor authentication | Auth/Users/Businesses and platform | Implemented; automated regression and manual acceptance apply | auth.integration.test.ts; phase2.spec.ts; platform code and handbook |
+| FR-35 | Backend authorization | Auth/Users/Businesses and platform | Implemented; automated regression and manual acceptance apply | auth.integration.test.ts; phase2.spec.ts; platform code and handbook |
+| FR-36 | Transactional data and search | PostgreSQL/Prisma and server queries | Implemented; automated regression and manual acceptance apply | Migration chain, pagination/date bounds, integration and load suites |
+| FR-37 | Secure file handling | Files and owning domain policies | Implemented; automated regression and manual acceptance apply | application/inventory/messaging integration suites; type/size/private authorization |
+| FR-38 | API and secret security | Security middleware/configuration | Implemented; automated regression and manual acceptance apply | tests/security/http.mjs; config.test.ts; Redis limits; dependency/build-context review |
+| FR-39 | Rate limiting and abuse protection | Security middleware/configuration | Implemented; automated regression and manual acceptance apply | tests/security/http.mjs; config.test.ts; Redis limits; dependency/build-context review |
+| FR-40 | Audit records | Admin and owning domain services | Implemented; automated regression and manual acceptance apply | admin.integration.test.ts; phase7.spec.ts; accepted Phase 7 report |
+| FR-41 | Observability and health checks | Telemetry/Health/Operations | Local instrumentation implemented; external alert routing/retention pending | HTTP/worker spans, Prometheus rules, Grafana dashboard, queue/dependency metrics |
+| FR-42 | Backups and recovery | Database scripts/Operations | Local backup/restore verified; production off-host retention and recovery objectives pending | backup.sh, restore.sh; all 26 restored tables matched; private storage snapshot |
+| FR-43 | Environment separation | Deployment | Isolated local environments verified; external staging deployment pending | Separate DB/Redis/bucket; infrastructure/deploy/compose.yaml |
+| FR-44 | Modular and horizontally scalable backend | Modular monolith/platform | Implemented; automated regression and manual acceptance apply | Domain boundaries, shared Redis limits, two API instances sharing DB/Redis; capacity limits reported |
+| FR-45 | Failure isolation and graceful degradation | Worker isolation and public error states | Implemented; automated regression and manual acceptance apply | Notification outage/retry tests, finite health probe timeout, web error/loading/not-found |
+| FR-46 | MVP business account model | Auth/Users/Businesses and platform | Implemented; automated regression and manual acceptance apply | auth.integration.test.ts; phase2.spec.ts; platform code and handbook |
+| FR-47 | Registration information | Applications | Implemented; automated regression and manual acceptance apply | applications.integration.test.ts; phase3.spec.ts |
+| FR-48 | Registration flow | Applications | Implemented; automated regression and manual acceptance apply | applications.integration.test.ts; phase3.spec.ts |
+| FR-49 | Document requirements | Applications | Implemented; automated regression and manual acceptance apply | applications.integration.test.ts; phase3.spec.ts |
+| FR-50 | Review and correction | Applications | Implemented; automated regression and manual acceptance apply | applications.integration.test.ts; phase3.spec.ts |
+| FR-51 | Approval versus external accreditation | Applications | Implemented; automated regression and manual acceptance apply | applications.integration.test.ts; phase3.spec.ts |
+| FR-52 | Authoritative business profile | Businesses/Inventory/Verticals | Implemented; automated regression and manual acceptance apply | inventory.integration.test.ts, verticals.integration.test.ts; phase4.spec.ts, verticals.spec.ts |
+| FR-53 | Profile geography and trust | Businesses/Inventory/Verticals | Implemented; automated regression and manual acceptance apply | inventory.integration.test.ts, verticals.integration.test.ts; phase4.spec.ts, verticals.spec.ts |
+| FR-54 | Contact visibility | Businesses/Inventory/Verticals | Implemented; automated regression and manual acceptance apply | inventory.integration.test.ts, verticals.integration.test.ts; phase4.spec.ts, verticals.spec.ts |
+| FR-55 | Distinct commercial objects | Businesses/Inventory/Verticals | Implemented; automated regression and manual acceptance apply | inventory.integration.test.ts, verticals.integration.test.ts; phase4.spec.ts, verticals.spec.ts |
+| FR-56 | Hajj and Umrah subtypes | Businesses/Inventory/Verticals | Implemented; automated regression and manual acceptance apply | inventory.integration.test.ts, verticals.integration.test.ts; phase4.spec.ts, verticals.spec.ts |
+| FR-57 | Umrah package details | Businesses/Inventory/Verticals | Implemented; automated regression and manual acceptance apply | inventory.integration.test.ts, verticals.integration.test.ts; phase4.spec.ts, verticals.spec.ts |
+| FR-58 | Offering lifecycle | Businesses/Inventory/Verticals | Implemented; automated regression and manual acceptance apply | inventory.integration.test.ts, verticals.integration.test.ts; phase4.spec.ts, verticals.spec.ts |
+| FR-59 | Availability and capacity | Businesses/Inventory/Verticals | Implemented; automated regression and manual acceptance apply | inventory.integration.test.ts, verticals.integration.test.ts; phase4.spec.ts, verticals.spec.ts |
+| FR-60 | B2B pricing | Businesses/Inventory/Verticals | Implemented; automated regression and manual acceptance apply | inventory.integration.test.ts, verticals.integration.test.ts; phase4.spec.ts, verticals.spec.ts |
+| FR-61 | Geographic separation | Businesses/Inventory/Verticals | Implemented; automated regression and manual acceptance apply | inventory.integration.test.ts, verticals.integration.test.ts; phase4.spec.ts, verticals.spec.ts |
+| FR-62 | Custom package request | Messaging/Custom requests | Implemented; automated regression and manual acceptance apply | messaging.integration.test.ts; phase6.spec.ts |
+| FR-63 | Focused business navigation | Marketplace and business dashboard | Implemented; automated regression and manual acceptance apply | marketplace.integration.test.ts; phase5.spec.ts, phase6.spec.ts |
+| FR-64 | Operational dashboard | Marketplace and business dashboard | Implemented; automated regression and manual acceptance apply | marketplace.integration.test.ts; phase5.spec.ts, phase6.spec.ts |
+| FR-65 | Requirement-oriented search and results | Marketplace and business dashboard | Implemented; automated regression and manual acceptance apply | marketplace.integration.test.ts; phase5.spec.ts, phase6.spec.ts |
+| FR-66 | Specialized filters | Marketplace and business dashboard | Implemented; automated regression and manual acceptance apply | marketplace.integration.test.ts; phase5.spec.ts, phase6.spec.ts |
+| FR-67 | Package comparison | Marketplace and business dashboard | Implemented; automated regression and manual acceptance apply | marketplace.integration.test.ts; phase5.spec.ts, phase6.spec.ts |
+| FR-68 | Messaging eligibility and context | Messaging/Custom requests | Implemented; automated regression and manual acceptance apply | messaging.integration.test.ts; phase6.spec.ts |
+| FR-69 | Messaging functions | Messaging/Custom requests | Implemented; automated regression and manual acceptance apply | messaging.integration.test.ts; phase6.spec.ts |
+| FR-70 | Enquiry actions and abuse controls | Messaging/Custom requests | Implemented; automated regression and manual acceptance apply | messaging.integration.test.ts; phase6.spec.ts |
+| FR-71 | Messaging isolation | Messaging/Custom requests | Implemented; automated regression and manual acceptance apply | messaging.integration.test.ts; phase6.spec.ts |
+| FR-72 | Admin workspace | Admin and owning domain services | Implemented; automated regression and manual acceptance apply | admin.integration.test.ts; phase7.spec.ts; accepted Phase 7 report |
+| FR-73 | Application and business administration | Admin and owning domain services | Implemented; automated regression and manual acceptance apply | admin.integration.test.ts; phase7.spec.ts; accepted Phase 7 report |
+| FR-74 | Marketplace moderation and accountability | Admin and owning domain services | Implemented; automated regression and manual acceptance apply | admin.integration.test.ts; phase7.spec.ts; accepted Phase 7 report |
+| FR-75 | System health view | Admin and owning domain services | Implemented; automated regression and manual acceptance apply | admin.integration.test.ts; phase7.spec.ts; accepted Phase 7 report |

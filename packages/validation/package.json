@@ -1,0 +1,30 @@
+{
+  "name": "@b2b/validation",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./auth": "./dist/auth.js",
+    "./application": "./dist/application.js",
+    "./inventory": "./dist/inventory.js",
+    "./marketplace": "./dist/marketplace.js",
+    "./messaging": "./dist/messaging.js",
+    "./verticals": "./dist/verticals.js",
+    "./*": "./src/*",
+    "./admin": "./dist/admin.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json",
+    "lint": "tsc --noEmit",
+    "test": "vitest run --passWithNoTests"
+  },
+  "devDependencies": {
+    "typescript": "7.0.2",
+    "vitest": "5.0.1",
+    "eslint": "10.10.0"
+  },
+  "dependencies": {
+    "zod": "^4.0.0"
+  }
+}

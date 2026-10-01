@@ -1,0 +1,35 @@
+name: b2btravelv2-dev
+services:
+  postgres:
+    image: postgres:18.6
+    environment:
+      POSTGRES_DB: b2btravelv2_dev
+      POSTGRES_USER: ${LOCAL_DB_USER:?Set LOCAL_DB_USER in ignored .env}
+      POSTGRES_PASSWORD: ${LOCAL_DB_PASSWORD:?Set LOCAL_DB_PASSWORD in ignored .env}
+    ports: ['127.0.0.1:55432:5432']
+    volumes: ['postgres_data:/var/lib/postgresql']
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB']
+      interval: 5s
+      retries: 10
+  redis:
+    image: redis:8.10.1
+    ports: ['127.0.0.1:16380:6379']
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      retries: 10
+  storage:
+    image: chrislusf/seaweedfs:4.47
+    command: 'mini -s3 -bucket=${S3_BUCKET:-local-development}'
+    ports: ['127.0.0.1:8333:8333']
+    volumes: ['storage_data:/data']
+  otel:
+    image: otel/opentelemetry-collector:0.160.0
+    command: ['--config=/etc/otelcol/config.yaml']
+    volumes:
+      ['../observability/otel/collector.yaml:/etc/otelcol/config.yaml:ro']
+    ports: ['127.0.0.1:4318:4318']
+volumes:
+  postgres_data:
+  storage_data:

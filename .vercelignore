@@ -1,0 +1,13 @@
+demo-private/
+.local/
+.env
+.env.*
+**/*.dump
+**/*.tar
+node_modules/
+**/node_modules/
+**/.next/
+.git/
+test-results/
+playwright-report/
+outputs/
