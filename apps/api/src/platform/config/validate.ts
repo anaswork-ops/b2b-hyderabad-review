@@ -1,12 +1,21 @@
 import { isIP } from 'node:net';
 export function validateConfig(env: NodeJS.ProcessEnv = process.env) {
   const stage = env.NODE_ENV ?? 'development';
+  if (env.STORAGE_DRIVER && !['s3', 'vercel-blob'].includes(env.STORAGE_DRIVER))
+    throw new Error('Invalid STORAGE_DRIVER');
+  if (
+    env.DEPLOYMENT_MODE === 'vercel-services' &&
+    (env.CRON_SECRET?.length ?? 0) < 32
+  )
+    throw new Error('CRON_SECRET must have at least 32 characters');
   if (!['development', 'test', 'production'].includes(stage))
     throw new Error('Invalid NODE_ENV');
   for (const [name, protocols] of Object.entries({
     DATABASE_URL: ['postgres:', 'postgresql:'],
     REDIS_URL: ['redis:', 'rediss:'],
-    S3_ENDPOINT: ['http:', 'https:'],
+    ...(env.STORAGE_DRIVER === 'vercel-blob'
+      ? {}
+      : { S3_ENDPOINT: ['http:', 'https:'] }),
   })) {
     try {
       if (!protocols.includes(new URL(env[name] ?? '').protocol))
@@ -38,13 +47,17 @@ export function validateConfig(env: NodeJS.ProcessEnv = process.env) {
       throw new Error(
         'Production METRICS_TOKEN must have at least 32 characters',
       );
-    for (const name of [
-      'S3_BUCKET',
-      'S3_REGION',
-      'S3_ACCESS_KEY_ID',
-      'S3_SECRET_ACCESS_KEY',
-    ])
-      if (!env[name]) throw new Error(`Missing ${name}`);
+    if (env.STORAGE_DRIVER === 'vercel-blob') {
+      if (!env.BLOB_STORE_ID && !env.BLOB_READ_WRITE_TOKEN)
+        throw new Error('Missing Blob store configuration');
+    } else
+      for (const name of [
+        'S3_BUCKET',
+        'S3_REGION',
+        'S3_ACCESS_KEY_ID',
+        'S3_SECRET_ACCESS_KEY',
+      ])
+        if (!env[name]) throw new Error(`Missing ${name}`);
     if (/demo|test|_dev(?:$|_)/i.test(new URL(env.DATABASE_URL!).pathname))
       throw new Error('Production must use a dedicated non-demo database');
   }

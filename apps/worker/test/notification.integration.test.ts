@@ -3,7 +3,7 @@ import { randomBytes, randomUUID, createCipheriv } from 'node:crypto';
 import { createServer } from 'node:http';
 import { PrismaClient } from '@prisma/client';
 import { PrismaPg } from '@prisma/adapter-pg';
-import { processNotification } from '../src/jobs/notification.js';
+import { processNotificationLocked as processNotification } from '@b2b/notifications/notification';
 if (
   new URL(process.env.DATABASE_URL ?? 'http://invalid').pathname !==
   '/b2btravelv2_phase2_test_phase7_20260930'
@@ -75,4 +75,61 @@ it('persists retries and delivers once through a real HTTP gateway after recover
   ).toMatchObject({ deliveryState: 'DELIVERED', attempts: 2, lastError: null });
   expect(calls).toBe(2);
   expect(keys).toEqual([intent.id, intent.id]);
+}, 15000);
+
+it('rejects concurrent processing and releases the lock after completion', async () => {
+  const user = await db.user.create({
+    data: {
+      email: `concurrent-${randomUUID()}@example.test`,
+      passwordHash: 'non-login fixture',
+    },
+  });
+  const iv = randomBytes(12);
+  const cipher = createCipheriv(
+    'aes-256-gcm',
+    Buffer.from(process.env.AUTH_ENCRYPTION_KEY!, 'hex'),
+    iv,
+  );
+  const payload = Buffer.concat([cipher.update('APPROVED'), cipher.final()]);
+  const intent = await db.notificationIntent.create({
+    data: {
+      recipientUserId: user.id,
+      kind: 'APPLICATION_APPROVED',
+      channel: 'EMAIL',
+      payloadEncrypted: Buffer.concat([
+        iv,
+        cipher.getAuthTag(),
+        payload,
+      ]).toString('base64url'),
+    },
+  });
+  let entered!: () => void,
+    release!: () => void,
+    deliveries = 0;
+  const started = new Promise<void>((resolve) => {
+    entered = resolve;
+  });
+  const waiting = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  const send = async () => {
+    deliveries++;
+    entered();
+    await waiting;
+  };
+  const first = processNotification(db, intent.id, send);
+  try {
+    await started;
+    await expect(processNotification(db, intent.id, send)).rejects.toThrow(
+      'notification_busy',
+    );
+  } finally {
+    release();
+  }
+  await first;
+  await processNotification(db, intent.id, send);
+  expect(deliveries).toBe(1);
+  expect(
+    await db.notificationIntent.findUnique({ where: { id: intent.id } }),
+  ).toMatchObject({ deliveryState: 'DELIVERED', attempts: 1 });
 }, 15000);

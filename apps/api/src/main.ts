@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import { vercelMiddleware } from './platform/vercel/middleware.js';
 import { NestFactory } from '@nestjs/core';
 import express from 'express';
 import { sharedRateLimit } from './platform/security/rate-limit.js';
@@ -34,6 +35,7 @@ async function bootstrap() {
         'trust proxy',
         process.env.TRUSTED_PROXY_CIDRS.split(',').map((x) => x.trim()),
       );
+  app.use(vercelMiddleware);
   app.use(observeRequest);
   app.use(helmet());
   app.use(
@@ -59,7 +61,11 @@ async function bootstrap() {
       res: express.Response,
       next: express.NextFunction,
     ) => {
-      const type = req.headers['content-type']?.split(';')[0];
+      const type = (
+        req.headers['x-upload-content-type'] ?? req.headers['content-type']
+      )
+        ?.toString()
+        .split(';')[0];
       if (
         type &&
         ['application/pdf', 'image/png', 'image/jpeg', 'image/webp'].includes(
@@ -96,8 +102,8 @@ async function bootstrap() {
   app.use('/auth', authLimiter);
   app.enableShutdownHooks();
   const server = await app.listen(
-    Number(process.env.API_PORT ?? 3001),
-    process.env.API_HOST ?? '127.0.0.1',
+    Number(process.env.PORT ?? process.env.API_PORT ?? 3001),
+    process.env.API_HOST ?? (process.env.VERCEL ? '0.0.0.0' : '127.0.0.1'),
   );
   server.keepAliveTimeout = 65000;
   server.headersTimeout = 70000;

@@ -508,13 +508,15 @@ export class MessagingService {
     messageId: string,
     filename: string,
     contentType: string,
-    bytes: Buffer,
+    body: unknown,
   ) {
     const { business } = await this.participant(user, conversationId);
     const message = await this.db.message.findFirst({
       where: { id: messageId, conversationId, senderBusinessId: business.id },
     });
     if (!message) throw new ForbiddenException('Attachment access denied');
+    const bytes = await this.files.receive(user.id, body, contentType);
+    if (!Buffer.isBuffer(bytes)) return bytes;
     if (!bytes.length || bytes.length > 5 * 1024 * 1024)
       throw new BadRequestException('Invalid attachment size');
     const valid =
@@ -546,7 +548,7 @@ export class MessagingService {
       where: { id, message: { conversationId } },
     });
     if (!item) throw new NotFoundException('Attachment not found');
-    return { ...item, bytes: await this.files.get(item.storageKey) };
+    return { ...item, ...(await this.files.download(item.storageKey)) };
   }
 
   async adminReports(q: import('@b2b/validation/admin').AdminQuery) {

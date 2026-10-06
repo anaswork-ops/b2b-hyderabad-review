@@ -94,13 +94,13 @@ export class ApplicationsController {
   ) {
     origin(requestOrigin);
     const user = await this.session(req, csrf ?? '');
-    if (!Buffer.isBuffer(req.body))
-      throw new BadRequestException('Invalid document body');
     return this.applications.upload(
       user,
       parse(z.enum(['REGISTRATION_LICENCE', 'SUPPORTING']), kind),
       filename ?? '',
-      contentType ?? '',
+      (req.headers['x-upload-content-type'] as string | undefined) ??
+        contentType ??
+        '',
       req.body,
     );
   }
@@ -120,6 +120,10 @@ export class ApplicationsController {
       `attachment; filename="${result.filename}"`,
     );
     res.setHeader('Cache-Control', 'private, no-store');
+    if (result.url) {
+      res.redirect(302, result.url);
+      return;
+    }
     res.send(result.bytes);
   }
   @Get('admin/:applicationId/documents/:id')
@@ -142,6 +146,10 @@ export class ApplicationsController {
       `attachment; filename="${result.filename}"`,
     );
     res.setHeader('Cache-Control', 'private, no-store');
+    if (result.url) {
+      res.redirect(302, result.url);
+      return;
+    }
     res.send(result.bytes);
   }
   @Get('admin/requirements')

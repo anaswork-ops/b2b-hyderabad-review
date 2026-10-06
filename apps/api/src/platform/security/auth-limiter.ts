@@ -1,3 +1,4 @@
+import { clientIp } from './client-ip.js';
 import { createHmac } from 'node:crypto';
 import type { Request, Response, NextFunction } from 'express';
 import { createClient } from 'redis';
@@ -49,7 +50,7 @@ export async function authLimiter(
   if (!policy || req.method !== 'POST') return next();
   const [limit, seconds] = policy;
   try {
-    const ip = req.ip ?? 'unknown';
+    const ip = clientIp(req);
     const identities = [`ip:${ip}`];
     if (typeof req.body?.email === 'string')
       identities.push(`email:${req.body.email.trim().toLowerCase()}`);

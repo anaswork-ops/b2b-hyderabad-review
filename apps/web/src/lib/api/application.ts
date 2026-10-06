@@ -1,3 +1,4 @@
+import { uploadFile } from './upload';
 import { API } from './auth';
 const csrf = () =>
   decodeURIComponent(
@@ -28,17 +29,16 @@ export async function uploadApplicationDocument(
   file: File,
   kind: 'REGISTRATION_LICENCE' | 'SUPPORTING',
 ) {
-  const response = await fetch(`${API}/applications/mine/documents`, {
-    method: 'POST',
-    credentials: 'include',
-    headers: {
+  const response = await uploadFile(
+    `${API}/applications/mine/documents`,
+    file,
+    {
       'Content-Type': file.type,
       'X-CSRF-Token': csrf(),
       'X-Document-Kind': kind,
       'X-File-Name': file.name,
     },
-    body: file,
-  });
+  );
   const data = await response.json().catch(() => ({}));
   if (!response.ok)
     throw new Error(

@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
+import { FilesService } from '../files/files.service.js';
 import { createClient } from 'redis';
 import { probeDatabase } from '../../platform/db/prisma.js';
 @Injectable()
 export class HealthService {
+  private readonly files = new FilesService();
   async check() {
     const services: Record<string, 'up' | 'down'> = {
       postgres: 'down',
@@ -25,14 +27,7 @@ export class HealthService {
         if (redis.isOpen) await redis.quit();
       }
     }
-    if (process.env.S3_ENDPOINT) {
-      try {
-        const response = await fetch(process.env.S3_ENDPOINT, {
-          signal: AbortSignal.timeout(2000),
-        });
-        if (response.ok) services.storage = 'up';
-      } catch {}
-    }
+    if (await this.files.healthy()) services.storage = 'up';
     return {
       status: Object.values(services).every((value) => value === 'up')
         ? 'ok'
@@ -42,6 +37,8 @@ export class HealthService {
   }
 
   async jobs() {
+    if (process.env.DEPLOYMENT_MODE === 'vercel-services')
+      return { status: 'managed', provider: 'vercel-queues', workers: 0 };
     if (!process.env.REDIS_URL) return { status: 'unavailable', workers: 0 };
     const { Queue } = await import('bullmq');
     const url = new URL(process.env.REDIS_URL);

@@ -4,7 +4,13 @@
     "build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**", ".next/**"],
-      "env": ["NEXT_PUBLIC_API_ORIGIN", "API_PROXY_ORIGIN", "API_ORIGIN"]
+      "env": [
+        "NEXT_PUBLIC_API_ORIGIN",
+        "API_PROXY_ORIGIN",
+        "API_ORIGIN",
+        "DEPLOYMENT_MODE",
+        "NEXT_PUBLIC_STORAGE_DRIVER"
+      ]
     },
     "typecheck": {
       "dependsOn": ["^build"]
@@ -43,6 +49,13 @@
     "EMAIL_DELIVERY_KEY",
     "MOBILE_DELIVERY_URL",
     "MOBILE_DELIVERY_KEY",
-    "API_PROXY_ORIGIN"
+    "API_PROXY_ORIGIN",
+    "DEPLOYMENT_MODE",
+    "VERCEL",
+    "CRON_SECRET",
+    "NEXT_PUBLIC_STORAGE_DRIVER",
+    "STORAGE_DRIVER",
+    "BLOB_STORE_ID",
+    "BLOB_READ_WRITE_TOKEN"
   ]
 }

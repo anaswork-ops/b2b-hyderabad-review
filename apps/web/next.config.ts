@@ -3,6 +3,7 @@ const nextConfig: NextConfig = {
   transpilePackages: ['@b2b/ui'],
   poweredByHeader: false,
   async rewrites() {
+    if (process.env.DEPLOYMENT_MODE === 'vercel-services') return [];
     const upstream = process.env.API_PROXY_ORIGIN;
     if (!upstream) {
       if (process.env.NEXT_PUBLIC_API_ORIGIN === '/api') {

@@ -212,12 +212,13 @@ export class InventoryController {
     @Headers('content-type') contentType?: string,
   ) {
     const user = await this.mutation(req, o, csrf);
-    if (!Buffer.isBuffer(req.body))
-      throw new BadRequestException('Invalid media body');
     return this.inventory.uploadPackageMedia(user, parse(z.guid(), id), {
       kind: parse(z.enum(['IMAGE', 'BROCHURE', 'DOCUMENT']), kind),
       filename: parse(z.string().trim().min(1).max(255), filename),
-      contentType: contentType ?? '',
+      contentType:
+        (req.headers['x-upload-content-type'] as string | undefined) ??
+        contentType ??
+        '',
       isPublic: publicValue === 'true',
       bytes: req.body,
     });
@@ -256,7 +257,12 @@ export class InventoryController {
   }
   private send(
     res: Response,
-    media: { contentType: string; filename: string; bytes: Buffer },
+    media: {
+      contentType: string;
+      filename: string;
+      bytes?: Buffer;
+      url?: string;
+    },
   ) {
     res.setHeader('Content-Type', media.contentType);
     res.setHeader(
@@ -264,6 +270,10 @@ export class InventoryController {
       `inline; filename="${media.filename.replace(/["\\]/g, '')}"`,
     );
     res.setHeader('Cache-Control', 'private, no-store');
+    if (media.url) {
+      res.redirect(302, media.url);
+      return;
+    }
     res.send(media.bytes);
   }
 }

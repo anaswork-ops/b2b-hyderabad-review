@@ -352,7 +352,7 @@ export class InventoryService {
       filename: string;
       contentType: string;
       isPublic: boolean;
-      bytes: Buffer;
+      bytes: unknown;
     },
   ) {
     const profile = await this.profile(user);
@@ -360,20 +360,24 @@ export class InventoryService {
       where: { id: packageId, profileId: profile.id },
     });
     if (!item) throw new NotFoundException('Package not found');
-    if (!input.bytes.length || input.bytes.length > 5 * 1024 * 1024)
+    const bytes = await this.files.receive(
+      user.id,
+      input.bytes,
+      input.contentType,
+    );
+    if (!Buffer.isBuffer(bytes)) return bytes;
+    if (!bytes.length || bytes.length > 5 * 1024 * 1024)
       throw new BadRequestException('Invalid media size');
     const valid =
       input.contentType === 'application/pdf'
-        ? input.bytes.subarray(0, 5).toString() === '%PDF-'
+        ? bytes.subarray(0, 5).toString() === '%PDF-'
         : input.contentType === 'image/png'
-          ? input.bytes
-              .subarray(0, 8)
-              .equals(Buffer.from('89504e470d0a1a0a', 'hex'))
+          ? bytes.subarray(0, 8).equals(Buffer.from('89504e470d0a1a0a', 'hex'))
           : input.contentType === 'image/jpeg'
-            ? input.bytes.subarray(0, 3).equals(Buffer.from('ffd8ff', 'hex'))
+            ? bytes.subarray(0, 3).equals(Buffer.from('ffd8ff', 'hex'))
             : input.contentType === 'image/webp'
-              ? input.bytes.subarray(0, 4).toString() === 'RIFF' &&
-                input.bytes.subarray(8, 12).toString() === 'WEBP'
+              ? bytes.subarray(0, 4).toString() === 'RIFF' &&
+                bytes.subarray(8, 12).toString() === 'WEBP'
               : false;
     if (!valid) throw new BadRequestException('Unsupported media type');
     const filename = input.filename
@@ -382,7 +386,7 @@ export class InventoryService {
     if (!filename) throw new BadRequestException('Invalid filename');
     const id = crypto.randomUUID();
     const storageKey = `phase4/${profile.id}/${packageId}/${id}`;
-    await this.files.put(storageKey, input.bytes, input.contentType);
+    await this.files.put(storageKey, bytes, input.contentType);
     return this.db.offeringMedia.create({
       data: {
         id,
@@ -390,7 +394,7 @@ export class InventoryService {
         kind: input.kind,
         filename,
         contentType: input.contentType,
-        sizeBytes: input.bytes.length,
+        sizeBytes: bytes.length,
         storageKey,
         isPublic: input.isPublic,
       },
@@ -402,7 +406,7 @@ export class InventoryService {
       where: { id, packageId, package: { profileId: profile.id } },
     });
     if (!media) throw new NotFoundException('Media not found');
-    return { ...media, bytes: await this.files.get(media.storageKey) };
+    return { ...media, ...(await this.files.download(media.storageKey)) };
   }
   async publicPackageMedia(slug: string, packageId: string, id: string) {
     const media = await this.db.offeringMedia.findFirst({
@@ -418,7 +422,7 @@ export class InventoryService {
       },
     });
     if (!media) throw new NotFoundException('Media not found');
-    return { ...media, bytes: await this.files.get(media.storageKey) };
+    return { ...media, ...(await this.files.download(media.storageKey)) };
   }
 
   async adminList(

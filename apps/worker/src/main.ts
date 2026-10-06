@@ -5,7 +5,7 @@ import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '@prisma/client';
 import pino from 'pino';
 import { startTelemetry } from './telemetry.js';
-import { processNotification } from './jobs/notification.js';
+import { processNotificationLocked as processNotification } from '@b2b/notifications/notification';
 
 type DeliveryJob = { intentId: string };
 async function main() {

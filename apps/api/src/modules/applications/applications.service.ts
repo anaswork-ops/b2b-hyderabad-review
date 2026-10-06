@@ -234,11 +234,13 @@ export class ApplicationsService {
     kind: 'REGISTRATION_LICENCE' | 'SUPPORTING',
     filename: string,
     contentType: string,
-    bytes: Buffer,
+    body: unknown,
   ) {
     const application = await this.owned(user);
     if (!application || !editable.has(application.status))
       throw new BadRequestException('Application cannot accept documents');
+    const bytes = await this.files.receive(user.id, body, contentType);
+    if (!Buffer.isBuffer(bytes)) return bytes;
     if (!bytes.length || bytes.length > 5 * 1024 * 1024)
       throw new BadRequestException('Invalid document size');
     const valid =
@@ -283,7 +285,7 @@ export class ApplicationsService {
     return {
       filename: document.filename,
       contentType: document.contentType,
-      bytes: await this.files.get(document.storageKey),
+      ...(await this.files.download(document.storageKey)),
     };
   }
   listRequirements() {

@@ -1,3 +1,4 @@
+import { uploadFile } from './upload';
 import { API } from './auth';
 const csrf = () =>
   decodeURIComponent(
@@ -30,18 +31,17 @@ export async function uploadPackageMedia(
   kind: 'IMAGE' | 'BROCHURE' | 'DOCUMENT',
   isPublic: boolean,
 ) {
-  const response = await fetch(`${API}/inventory/packages/${packageId}/media`, {
-    method: 'POST',
-    credentials: 'include',
-    headers: {
+  const response = await uploadFile(
+    `${API}/inventory/packages/${packageId}/media`,
+    file,
+    {
       'Content-Type': file.type,
       'X-CSRF-Token': csrf(),
       'X-Media-Kind': kind,
       'X-File-Name': file.name,
       'X-Media-Public': String(isPublic),
     },
-    body: file,
-  });
+  );
   const data = await response.json().catch(() => ({}));
   if (!response.ok)
     throw new Error(

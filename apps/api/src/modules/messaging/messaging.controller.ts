@@ -140,14 +140,14 @@ export class MessagingController {
     @Headers('content-type') contentType?: string,
   ) {
     const user = await this.mutation(req, o, csrf);
-    if (!Buffer.isBuffer(req.body))
-      throw new BadRequestException('Invalid attachment body');
     return this.messaging.attach(
       user,
       parse(z.guid(), conversationId),
       parse(z.guid(), messageId),
       filename ?? '',
-      contentType ?? '',
+      (req.headers['x-upload-content-type'] as string | undefined) ??
+        contentType ??
+        '',
       req.body,
     );
   }
@@ -168,6 +168,10 @@ export class MessagingController {
       'attachment; filename="' + x.filename.replace(/["\\]/g, '') + '"',
     );
     res.setHeader('Cache-Control', 'private, no-store');
+    if (x.url) {
+      res.redirect(302, x.url);
+      return;
+    }
     res.send(x.bytes);
   }
 }

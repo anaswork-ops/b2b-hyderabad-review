@@ -6,6 +6,7 @@ export function getDatabase(): PrismaClient {
   client ??= new PrismaClient({
     adapter: new PrismaPg({
       connectionString: process.env.DATABASE_URL,
+      max: process.env.VERCEL ? 3 : 10,
       connectionTimeoutMillis: 3000,
       statement_timeout: 5000,
     }),

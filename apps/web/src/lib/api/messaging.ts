@@ -1,3 +1,4 @@
+import { uploadFile } from './upload';
 import { API } from './auth';
 
 const csrf = () =>
@@ -34,17 +35,13 @@ export async function uploadMessageAttachment(
   messageId: string,
   file: File,
 ) {
-  const response = await fetch(
+  const response = await uploadFile(
     `${API}/messages/${conversationId}/messages/${messageId}/attachments`,
+    file,
     {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': file.type,
-        'X-CSRF-Token': csrf(),
-        'X-File-Name': file.name,
-      },
-      body: file,
+      'Content-Type': file.type,
+      'X-CSRF-Token': csrf(),
+      'X-File-Name': file.name,
     },
   );
   const data = await response.json().catch(() => ({}));

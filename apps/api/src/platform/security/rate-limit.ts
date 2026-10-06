@@ -1,3 +1,4 @@
+import { clientIp } from './client-ip.js';
 import { createHmac } from 'node:crypto';
 import type { Request, Response, NextFunction } from 'express';
 import { createClient } from 'redis';
@@ -25,7 +26,7 @@ export function sharedRateLimit(scope: string, limit: number, seconds = 60) {
         'sha256',
         Buffer.from(process.env.AUTH_ENCRYPTION_KEY!, 'hex'),
       )
-        .update(ipKeyGenerator(req.ip ?? 'unknown'))
+        .update(ipKeyGenerator(clientIp(req)))
         .digest('hex');
       const [count, ttl] = (await client.eval(script, {
         keys: [`limit:${scope}:${identity}`],
