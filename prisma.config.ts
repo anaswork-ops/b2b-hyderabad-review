@@ -1,4 +1,6 @@
-import 'dotenv/config';
+import { existsSync } from 'node:fs';
+import { loadEnvFile } from 'node:process';
+if (existsSync('.env')) loadEnvFile('.env');
 import { defineConfig } from 'prisma/config';
 export default defineConfig({
   schema: 'database/prisma/schema.prisma',

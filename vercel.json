@@ -23,9 +23,7 @@
       "installCommand": "cd ../.. && pnpm install --frozen-lockfile",
       "functions": {
         "src/main.ts": {
-          "includeFiles": [
-            "src/package.json"
-          ]
+          "includeFiles": "src/package.json"
         }
       }
     },
@@ -45,9 +43,7 @@
               "maxDeliveries": 5
             }
           ],
-          "includeFiles": [
-            "src/package.json"
-          ]
+          "includeFiles": "src/package.json"
         }
       }
     }
@@ -71,5 +67,8 @@
       "path": "/api/internal/outbox",
       "schedule": "0 3 * * *"
     }
+  ],
+  "regions": [
+    "sin1"
   ]
 }
