@@ -1,3 +1,5 @@
+import type { IncomingMessage, ServerResponse } from 'node:http';
+import { Readable } from 'node:stream';
 import { QueueClient } from '@vercel/queue';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '@prisma/client';
@@ -5,7 +7,7 @@ import { processNotificationLocked } from '@b2b/notifications/notification';
 
 let db: PrismaClient | undefined;
 const queue = new QueueClient();
-export default queue.handleNodeCallback<{ intentId: string }>(
+const callback = queue.handleCallback<{ intentId: string }>(
   async (message) => {
     if (
       !message ||
@@ -30,3 +32,28 @@ export default queue.handleNodeCallback<{ intentId: string }>(
   },
   { retry: () => ({ afterSeconds: 30 }) },
 );
+
+// Services supplies raw Node HTTP streams, not Express request/response objects.
+export default async function handler(
+  req: IncomingMessage,
+  res: ServerResponse,
+) {
+  const headers = new Headers();
+  for (const [name, value] of Object.entries(req.headers)) {
+    for (const item of Array.isArray(value) ? value : value ? [value] : [])
+      headers.append(name, item);
+  }
+  const request = new Request('https://queue.internal/', {
+    method: req.method,
+    headers,
+    ...(req.method === 'POST'
+      ? {
+          body: Readable.toWeb(req) as ReadableStream<Uint8Array>,
+          duplex: 'half',
+        }
+      : {}),
+  });
+  const response = await callback(request);
+  res.writeHead(response.status, Object.fromEntries(response.headers));
+  res.end(Buffer.from(await response.arrayBuffer()));
+}
