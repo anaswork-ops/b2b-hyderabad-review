@@ -18,22 +18,23 @@
     "api": {
       "root": "apps/api",
       "framework": "nestjs",
-      "entrypoint": "src/main.ts",
+      "entrypoint": "dist/main.js",
       "buildCommand": "cd ../.. && pnpm db:generate && pnpm exec turbo run build --filter=@b2b/api",
       "installCommand": "cd ../.. && pnpm install --frozen-lockfile",
       "functions": {
-        "src/main.ts": {
-          "includeFiles": "{src,dist}/package.json"
+        "dist/main.js": {
+          "includeFiles": "dist/package.json"
         }
-      }
+      },
+      "outputDirectory": "dist"
     },
     "notifications": {
       "root": "apps/worker",
-      "entrypoint": "src/vercel.ts",
+      "entrypoint": "dist/vercel.js",
       "buildCommand": "cd ../.. && pnpm db:generate && pnpm exec turbo run build --filter=@b2b/worker",
       "installCommand": "cd ../.. && pnpm install --frozen-lockfile",
       "functions": {
-        "src/vercel.ts": {
+        "dist/vercel.js": {
           "maxDuration": 30,
           "experimentalTriggers": [
             {
@@ -43,7 +44,7 @@
               "maxDeliveries": 5
             }
           ],
-          "includeFiles": "{src,dist}/package.json"
+          "includeFiles": "dist/package.json"
         }
       }
     }
