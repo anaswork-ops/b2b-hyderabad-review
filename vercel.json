@@ -23,7 +23,7 @@
       "installCommand": "cd ../.. && pnpm install --frozen-lockfile",
       "functions": {
         "src/main.ts": {
-          "includeFiles": "src/package.json"
+          "includeFiles": "{src,dist}/package.json"
         }
       }
     },
@@ -43,7 +43,7 @@
               "maxDeliveries": 5
             }
           ],
-          "includeFiles": "src/package.json"
+          "includeFiles": "{src,dist}/package.json"
         }
       }
     }
