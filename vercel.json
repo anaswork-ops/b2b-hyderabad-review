@@ -20,7 +20,14 @@
       "framework": "nestjs",
       "entrypoint": "src/main.ts",
       "buildCommand": "cd ../.. && pnpm db:generate && pnpm exec turbo run build --filter=@b2b/api",
-      "installCommand": "cd ../.. && pnpm install --frozen-lockfile"
+      "installCommand": "cd ../.. && pnpm install --frozen-lockfile",
+      "functions": {
+        "src/main.ts": {
+          "includeFiles": [
+            "src/package.json"
+          ]
+        }
+      }
     },
     "notifications": {
       "root": "apps/worker",
@@ -37,6 +44,9 @@
               "retryAfterSeconds": 30,
               "maxDeliveries": 5
             }
+          ],
+          "includeFiles": [
+            "src/package.json"
           ]
         }
       }
