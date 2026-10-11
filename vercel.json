@@ -25,7 +25,8 @@
         "server.mjs": {
           "includeFiles": "{package.json,dist/package.json}"
         }
-      }
+      },
+      "outputDirectory": "."
     },
     "notifications": {
       "root": "apps/worker",
@@ -45,7 +46,8 @@
           ],
           "includeFiles": "{package.json,dist/package.json}"
         }
-      }
+      },
+      "outputDirectory": "."
     }
   },
   "rewrites": [
